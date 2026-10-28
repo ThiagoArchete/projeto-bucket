@@ -67,7 +67,14 @@ public class GcsObjectService {
      * - blob.downloadTo(destino);
      */
     public void download(String objectName, Path destino) {
-        throw new UnsupportedOperationException("TODO: implementar download");
+        Blob blob = storage.get(bucketName, objectName);
+        if (blob == null) {
+            System.out.println("Objeto nao encontrado: " + objectName);
+            return;
+        }
+
+        blob.downloadTo(destino);
+        System.out.println("Download ok: " + destino);
     }
 
     /**
