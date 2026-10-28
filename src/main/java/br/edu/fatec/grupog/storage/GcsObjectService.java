@@ -85,6 +85,12 @@ public class GcsObjectService {
      * - tratar o caso em que o objeto nao existe (apagou == false)
      */
     public void apagar(String objectName) {
-        throw new UnsupportedOperationException("TODO: implementar exclusao");
+        boolean apagou = storage.delete(bucketName, objectName);
+        if (!apagou) {
+            System.out.println("Objeto nao encontrado: " + objectName);
+            return;
+        }
+
+        System.out.println("Objeto apagado: " + objectName);
     }
 }
