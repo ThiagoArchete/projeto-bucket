@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo pet</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+    <h1>Cadastrar pet</h1>
+    <form th:action="@{/pets}" method="post">
+        <label>Nome
+            <input type="text" name="nome" required>
+        </label>
+        <label>Especie / raca
+            <input type="text" name="especieRaca" required>
+        </label>
+        <label>Responsavel
+            <input type="text" name="responsavel" required>
+        </label>
+        <label>Data de nascimento
+            <input type="date" name="dataNascimento" required>
+        </label>
+        <button type="submit">Salvar</button>
+    </form>
+</main>
+</body>
+</html>

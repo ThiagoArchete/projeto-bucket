@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Objetos no bucket</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+    <h1>Objetos no bucket</h1>
+    <p th:if="${#lists.isEmpty(objetos)}">Bucket vazio.</p>
+    <ul>
+        <li th:each="obj : ${objetos}">
+            <a th:href="${baseUrl + obj.name}" th:text="${obj.name}" target="_blank"></a>
+            <span th:text="'(' + ${obj.size} + ' bytes)'"></span>
+        </li>
+    </ul>
+</main>
+</body>
+</html>

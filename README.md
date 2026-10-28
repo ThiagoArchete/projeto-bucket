@@ -1,35 +1,42 @@
-# Projeto Bucket (grupo-g)
+# PetShop (grupo-g)
 
-Aplicacao Java de console para Object Storage no Google Cloud Storage.
+Aplicacao Java (Spring Boot) do tema **petshop** da aula de Object Storage.
 
-- Bucket: `fatec-2026-grupo-g`
-- Projeto GCP: `serjava-demo`
+- Dados do pet: banco local H2
+- Arquivos de imagem: bucket `fatec-2026-grupo-g`
 
 ## Como rodar
 
-1. Java 17+ e Maven instalados.
-2. Coloque `sa-grupo-g-key.json` na raiz deste projeto (nao compartilhe essa chave).
-3. No PowerShell, na pasta do projeto:
+1. Java 17+ e Maven
+2. `sa-grupo-g-key.json` na raiz do projeto (nao compartilhe a chave)
+3. Na pasta do projeto:
 
 ```powershell
-mvn compile exec:java
+mvn spring-boot:run
 ```
+
+Abra http://localhost:8080
 
 ## O que ja funciona
 
-- Autenticacao com a Service Account
-- Upload de arquivo
-- Listagem dos objetos do bucket
+- Cadastro do pet (nome, especie/raca, responsavel, nascimento)
+- Upload de n fotos para o bucket, com data e marcacao de foto principal
+- Catalogo com miniatura da foto principal (URL publica do bucket)
+- Detalhe do pet com historico fotografico por data
+- Listagem dos objetos no bucket (`/bucket`)
 
-Depois do upload, o arquivo fica publico em:
+## Tarefa do outro membro
 
-`https://storage.googleapis.com/fatec-2026-grupo-g/<nome-do-objeto>`
+Em `FotoService.java`:
 
-## O que o grupo precisa implementar
+1. `apagar` — remover a imagem do bucket e o registro no banco
+2. `download` — baixar a imagem pela API do GCS (nao so o link publico)
 
-Em `GcsObjectService.java`:
+Os botoes **Apagar** e **Baixar** ja existem na tela de detalhe.
 
-- `download` — baixar um objeto para um arquivo local
-- `apagar` — remover um objeto do bucket
+## Demonstracao
 
-Ha comentarios com dicas no codigo.
+O enunciado pede **pelo menos 10 pets** e **3 imagens por pet**. Cadastrem pela tela.
+
+Console H2: http://localhost:8080/h2-console  
+JDBC URL: `jdbc:h2:file:./data/petshop`

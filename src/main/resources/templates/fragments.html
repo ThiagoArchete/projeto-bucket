@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="topo">
+    <a class="logo" th:href="@{/}">PetShop grupo-g</a>
+    <nav>
+        <a th:href="@{/}">Catalogo</a>
+        <a th:href="@{/pets/novo}">Novo pet</a>
+        <a th:href="@{/bucket}">Objetos no bucket</a>
+    </nav>
+</header>
+</body>
+</html>

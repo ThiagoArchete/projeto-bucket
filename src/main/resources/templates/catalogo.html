@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Catalogo - PetShop</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+    <h1>Catalogo de pets</h1>
+    <p th:if="${ok}" class="ok" th:text="${ok}"></p>
+
+    <p th:if="${#lists.isEmpty(pets)}">Nenhum pet cadastrado. Use "Novo pet".</p>
+
+    <section class="grade">
+        <article class="card" th:each="pet : ${pets}">
+            <a th:href="@{/pets/{id}(id=${pet.id})}">
+                <img th:if="${pet.fotoPrincipal != null}"
+                     th:src="${pet.fotoPrincipal.urlPublica}"
+                     th:alt="${pet.nome}">
+                <div th:if="${pet.fotoPrincipal == null}" class="sem-foto">Sem foto</div>
+                <h2 th:text="${pet.nome}">Nome</h2>
+            </a>
+            <p th:text="${pet.especieRaca}">especie</p>
+            <p>Responsavel: <span th:text="${pet.responsavel}"></span></p>
+            <p>Nascimento: <span th:text="${#temporals.format(pet.dataNascimento, 'dd/MM/yyyy')}"></span></p>
+        </article>
+    </section>
+</main>
+</body>
+</html>

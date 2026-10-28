@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova foto</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+    <h1>Enviar foto de <span th:text="${pet.nome}"></span></h1>
+    <form th:action="@{/pets/{id}/fotos(id=${pet.id})}" method="post" enctype="multipart/form-data">
+        <label>Imagem
+            <input type="file" name="arquivo" accept="image/*" required>
+        </label>
+        <label>Data da foto
+            <input type="date" name="dataFoto" required>
+        </label>
+        <label class="check">
+            <input type="checkbox" name="principal" value="true">
+            Imagem principal (capa do catalogo)
+        </label>
+        <button type="submit">Enviar para o bucket</button>
+    </form>
+</main>
+</body>
+</html>

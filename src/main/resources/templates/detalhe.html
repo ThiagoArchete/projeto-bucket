@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pet.nome}">Pet</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+    <p th:if="${ok}" class="ok" th:text="${ok}"></p>
+    <p th:if="${erro}" class="erro" th:text="${erro}"></p>
+
+    <h1 th:text="${pet.nome}">Nome</h1>
+    <p th:text="${pet.especieRaca}"></p>
+    <p>Responsavel: <span th:text="${pet.responsavel}"></span></p>
+    <p>Nascimento: <span th:text="${#temporals.format(pet.dataNascimento, 'dd/MM/yyyy')}"></span></p>
+
+    <p>
+        <a class="botao" th:href="@{/pets/{id}/fotos/nova(id=${pet.id})}">Adicionar foto</a>
+    </p>
+
+    <section th:if="${fotoPrincipal != null}" class="destaque">
+        <h2>Foto principal</h2>
+        <img th:src="${fotoPrincipal.urlPublica}" th:alt="${pet.nome}">
+    </section>
+
+    <h2>Historico fotografico</h2>
+    <p th:if="${historico.isEmpty()}">Nenhuma foto ainda.</p>
+
+    <section th:each="entrada : ${historico}">
+        <h3 th:text="${#temporals.format(entrada.key, 'dd/MM/yyyy')}">data</h3>
+        <div class="grade">
+            <article class="card" th:each="foto : ${entrada.value}">
+                <img th:src="${foto.urlPublica}" alt="foto do pet">
+                <p th:if="${foto.principal}"><strong>Principal</strong></p>
+                <p>
+                    <a th:href="@{/pets/{petId}/fotos/{fotoId}/download(petId=${pet.id}, fotoId=${foto.id})}">Baixar</a>
+                </p>
+                <form th:action="@{/pets/{petId}/fotos/{fotoId}/apagar(petId=${pet.id}, fotoId=${foto.id})}"
+                      method="post">
+                    <button type="submit">Apagar</button>
+                </form>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>

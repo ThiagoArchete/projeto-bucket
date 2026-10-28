@@ -5,6 +5,7 @@ target/
 .project
 .settings/
 *.log
+data/
 
 # Chave da Service Account — nao versionar
 sa-grupo-g-key.json
