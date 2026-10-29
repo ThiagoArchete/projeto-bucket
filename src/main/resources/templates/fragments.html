@@ -1,13 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="cabeca(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' · PetShop'">PetShop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
 <body>
-<header th:fragment="topo">
-    <a class="logo" th:href="@{/}">PetShop grupo-g</a>
-    <nav>
-        <a th:href="@{/}">Catalogo</a>
-        <a th:href="@{/pets/novo}">Novo pet</a>
-        <a th:href="@{/bucket}">Objetos no bucket</a>
-    </nav>
+<header th:fragment="topo" class="topo">
+    <div class="topo-conteudo">
+        <a class="logo" th:href="@{/}">
+            <span class="logo-icone">🐾</span>
+            <span>PetShop <small>grupo G · FATEC</small></span>
+        </a>
+        <nav class="menu">
+            <a th:href="@{/}">Catálogo</a>
+            <a th:href="@{/pets/novo}">Novo pet</a>
+            <a th:href="@{/bucket}">Bucket</a>
+        </nav>
+    </div>
 </header>
+
+<div th:fragment="avisos" th:remove="tag">
+    <p th:if="${ok}" class="aviso ok" th:text="${ok}"></p>
+    <p th:if="${erro}" class="aviso erro" th:text="${erro}"></p>
+</div>
 </body>
 </html>

@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Novo pet</title>
-    <link rel="stylesheet" th:href="@{/css/estilo.css}">
-</head>
+<head th:replace="~{fragments :: cabeca('Novo pet')}"></head>
 <body>
 <header th:replace="~{fragments :: topo}"></header>
 <main>
-    <h1>Cadastrar pet</h1>
-    <form th:action="@{/pets}" method="post">
+    <a class="voltar" th:href="@{/}">← Voltar ao catálogo</a>
+    <div class="cabecalho">
+        <div>
+            <h1>Cadastrar pet</h1>
+            <p>Depois de salvar, abra o pet no catálogo para adicionar as fotos.</p>
+        </div>
+    </div>
+
+    <form class="formulario" th:action="@{/pets}" method="post">
         <label>Nome
-            <input type="text" name="nome" required>
+            <input type="text" name="nome" placeholder="Ex.: Totó" required>
         </label>
-        <label>Especie / raca
-            <input type="text" name="especieRaca" required>
+        <label>Espécie / raça
+            <input type="text" name="especieRaca" placeholder="Ex.: Cachorro · Vira-lata" required>
         </label>
-        <label>Responsavel
-            <input type="text" name="responsavel" required>
+        <label>Responsável
+            <input type="text" name="responsavel" placeholder="Ex.: Claudião" required>
         </label>
         <label>Data de nascimento
             <input type="date" name="dataNascimento" required>
         </label>
-        <button type="submit">Salvar</button>
+        <button type="submit">Salvar pet</button>
     </form>
 </main>
 </body>

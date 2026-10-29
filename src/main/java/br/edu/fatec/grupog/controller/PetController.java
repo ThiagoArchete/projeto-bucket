@@ -51,8 +51,20 @@ public class PetController {
         return "redirect:/";
     }
 
+    @PostMapping("/pets/{id}/excluir")
+    public String excluir(@PathVariable("id") Long id, RedirectAttributes redirect) {
+        try {
+            petService.excluir(id);
+            redirect.addFlashAttribute("ok", "Pet excluido.");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("erro", e.getMessage());
+            return "redirect:/pets/" + id;
+        }
+        return "redirect:/";
+    }
+
     @GetMapping("/pets/{id}")
-    public String detalhe(@PathVariable Long id, Model model) {
+    public String detalhe(@PathVariable("id") Long id, Model model) {
         Pet pet = petService.buscar(id);
         List<Foto> fotos = fotoService.listarDoPet(id);
 
@@ -69,13 +81,13 @@ public class PetController {
     }
 
     @GetMapping("/pets/{id}/fotos/nova")
-    public String formFoto(@PathVariable Long id, Model model) {
+    public String formFoto(@PathVariable("id") Long id, Model model) {
         model.addAttribute("pet", petService.buscar(id));
         return "foto-form";
     }
 
     @PostMapping("/pets/{id}/fotos")
-    public String enviarFoto(@PathVariable Long id,
+    public String enviarFoto(@PathVariable("id") Long id,
                              @RequestParam("arquivo") MultipartFile arquivo,
                              @RequestParam("dataFoto") LocalDate dataFoto,
                              @RequestParam(value = "principal", required = false) boolean principal,
@@ -90,14 +102,25 @@ public class PetController {
     }
 
     @PostMapping("/pets/{petId}/fotos/{fotoId}/apagar")
-    public String apagarFoto(@PathVariable Long petId,
-                             @PathVariable Long fotoId,
+    public String apagarFoto(@PathVariable("petId") Long petId,
+                             @PathVariable("fotoId") Long fotoId,
                              RedirectAttributes redirect) {
         try {
             fotoService.apagar(petId, fotoId);
             redirect.addFlashAttribute("ok", "Foto apagada.");
-        } catch (UnsupportedOperationException e) {
-            redirect.addFlashAttribute("erro", "Ainda nao implementado: apagar foto. Tarefa do outro membro.");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("erro", e.getMessage());
+        }
+        return "redirect:/pets/" + petId;
+    }
+
+    @PostMapping("/pets/{petId}/fotos/{fotoId}/principal")
+    public String tornarPrincipal(@PathVariable("petId") Long petId,
+                                  @PathVariable("fotoId") Long fotoId,
+                                  RedirectAttributes redirect) {
+        try {
+            fotoService.tornarPrincipal(petId, fotoId);
+            redirect.addFlashAttribute("ok", "Foto principal atualizada.");
         } catch (Exception e) {
             redirect.addFlashAttribute("erro", e.getMessage());
         }
@@ -105,16 +128,13 @@ public class PetController {
     }
 
     @GetMapping("/pets/{petId}/fotos/{fotoId}/download")
-    public String baixarFoto(@PathVariable Long petId,
-                             @PathVariable Long fotoId,
+    public String baixarFoto(@PathVariable("petId") Long petId,
+                             @PathVariable("fotoId") Long fotoId,
                              HttpServletResponse response,
                              RedirectAttributes redirect) {
         try {
             fotoService.download(petId, fotoId, response);
             return null;
-        } catch (UnsupportedOperationException e) {
-            redirect.addFlashAttribute("erro", "Ainda nao implementado: download. Tarefa do outro membro.");
-            return "redirect:/pets/" + petId;
         } catch (Exception e) {
             redirect.addFlashAttribute("erro", e.getMessage());
             return "redirect:/pets/" + petId;

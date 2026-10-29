@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Catalogo - PetShop</title>
-    <link rel="stylesheet" th:href="@{/css/estilo.css}">
-</head>
+<head th:replace="~{fragments :: cabeca('Catálogo')}"></head>
 <body>
 <header th:replace="~{fragments :: topo}"></header>
 <main>
-    <h1>Catalogo de pets</h1>
-    <p th:if="${ok}" class="ok" th:text="${ok}"></p>
+    <div th:replace="~{fragments :: avisos}"></div>
 
-    <p th:if="${#lists.isEmpty(pets)}">Nenhum pet cadastrado. Use "Novo pet".</p>
+    <div class="cabecalho">
+        <div>
+            <h1>Nossos pets</h1>
+            <p th:text="${#lists.size(pets)} + ' pet(s) cadastrado(s)'">0 pets</p>
+        </div>
+        <a class="botao" th:href="@{/pets/novo}">+ Novo pet</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(pets)}" class="vazio">
+        <span class="emoji">🐶</span>
+        <p>Nenhum pet cadastrado ainda.</p>
+        <a class="botao" th:href="@{/pets/novo}">Cadastrar o primeiro pet</a>
+    </div>
 
     <section class="grade">
-        <article class="card" th:each="pet : ${pets}">
-            <a th:href="@{/pets/{id}(id=${pet.id})}">
+        <a class="pet-card" th:each="pet : ${pets}" th:href="@{/pets/{id}(id=${pet.id})}">
+            <div class="pet-card-foto">
                 <img th:if="${pet.fotoPrincipal != null}"
                      th:src="${pet.fotoPrincipal.urlPublica}"
-                     th:alt="${pet.nome}">
-                <div th:if="${pet.fotoPrincipal == null}" class="sem-foto">Sem foto</div>
+                     th:alt="${pet.nome}" loading="lazy">
+                <div th:if="${pet.fotoPrincipal == null}" class="sem-foto"><span>📷</span>Sem foto</div>
+                <span class="contador" th:if="${!pet.fotos.isEmpty()}"
+                      th:text="${#lists.size(pet.fotos)} + ' foto(s)'">3 fotos</span>
+            </div>
+            <div class="pet-card-info">
+                <span class="etiqueta" th:text="${pet.especieRaca}">espécie</span>
                 <h2 th:text="${pet.nome}">Nome</h2>
-            </a>
-            <p th:text="${pet.especieRaca}">especie</p>
-            <p>Responsavel: <span th:text="${pet.responsavel}"></span></p>
-            <p>Nascimento: <span th:text="${#temporals.format(pet.dataNascimento, 'dd/MM/yyyy')}"></span></p>
-        </article>
+                <p>👤 <span th:text="${pet.responsavel}"></span></p>
+                <p>🎂 <span th:text="${#temporals.format(pet.dataNascimento, 'dd/MM/yyyy')}"></span></p>
+            </div>
+        </a>
     </section>
 </main>
 </body>

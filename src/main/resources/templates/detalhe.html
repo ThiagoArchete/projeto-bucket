@@ -1,49 +1,89 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${pet.nome}">Pet</title>
-    <link rel="stylesheet" th:href="@{/css/estilo.css}">
-</head>
+<head th:replace="~{fragments :: cabeca(${pet.nome})}"></head>
 <body>
 <header th:replace="~{fragments :: topo}"></header>
 <main>
-    <p th:if="${ok}" class="ok" th:text="${ok}"></p>
-    <p th:if="${erro}" class="erro" th:text="${erro}"></p>
+    <a class="voltar" th:href="@{/}">← Voltar ao catálogo</a>
+    <div th:replace="~{fragments :: avisos}"></div>
 
-    <h1 th:text="${pet.nome}">Nome</h1>
-    <p th:text="${pet.especieRaca}"></p>
-    <p>Responsavel: <span th:text="${pet.responsavel}"></span></p>
-    <p>Nascimento: <span th:text="${#temporals.format(pet.dataNascimento, 'dd/MM/yyyy')}"></span></p>
-
-    <p>
-        <a class="botao" th:href="@{/pets/{id}/fotos/nova(id=${pet.id})}">Adicionar foto</a>
-    </p>
-
-    <section th:if="${fotoPrincipal != null}" class="destaque">
-        <h2>Foto principal</h2>
-        <img th:src="${fotoPrincipal.urlPublica}" th:alt="${pet.nome}">
-    </section>
-
-    <h2>Historico fotografico</h2>
-    <p th:if="${historico.isEmpty()}">Nenhuma foto ainda.</p>
-
-    <section th:each="entrada : ${historico}">
-        <h3 th:text="${#temporals.format(entrada.key, 'dd/MM/yyyy')}">data</h3>
-        <div class="grade">
-            <article class="card" th:each="foto : ${entrada.value}">
-                <img th:src="${foto.urlPublica}" alt="foto do pet">
-                <p th:if="${foto.principal}"><strong>Principal</strong></p>
-                <p>
-                    <a th:href="@{/pets/{petId}/fotos/{fotoId}/download(petId=${pet.id}, fotoId=${foto.id})}">Baixar</a>
-                </p>
-                <form th:action="@{/pets/{petId}/fotos/{fotoId}/apagar(petId=${pet.id}, fotoId=${foto.id})}"
-                      method="post">
-                    <button type="submit">Apagar</button>
+    <section class="perfil">
+        <div class="perfil-foto">
+            <img th:if="${fotoPrincipal != null}" th:src="${fotoPrincipal.urlPublica}" th:alt="${pet.nome}">
+            <div th:if="${fotoPrincipal == null}" class="sem-foto"><span>📷</span>Nenhuma foto ainda</div>
+        </div>
+        <div class="perfil-info">
+            <div>
+                <span class="etiqueta" th:text="${pet.especieRaca}">espécie</span>
+                <h1 th:text="${pet.nome}">Nome</h1>
+            </div>
+            <dl class="dados">
+                <div>
+                    <dt>Responsável</dt>
+                    <dd th:text="${pet.responsavel}"></dd>
+                </div>
+                <div>
+                    <dt>Nascimento</dt>
+                    <dd th:text="${#temporals.format(pet.dataNascimento, 'dd/MM/yyyy')}"></dd>
+                </div>
+                <div>
+                    <dt>Fotos</dt>
+                    <dd th:text="${#lists.size(pet.fotos)}"></dd>
+                </div>
+            </dl>
+            <div class="perfil-acoes">
+                <a class="botao" th:href="@{/pets/{id}/fotos/nova(id=${pet.id})}">+ Adicionar foto</a>
+                <form th:action="@{/pets/{id}/excluir(id=${pet.id})}" method="post"
+                      onsubmit="return confirm('Excluir este pet e todas as fotos dele do bucket?');">
+                    <button type="submit" class="botao-perigo">Excluir pet</button>
                 </form>
-            </article>
+            </div>
         </div>
     </section>
+
+    <div class="secao-titulo">
+        <h2>Histórico fotográfico</h2>
+        <span>organizado por data</span>
+    </div>
+
+    <div th:if="${historico.isEmpty()}" class="vazio">
+        <span class="emoji">📸</span>
+        <p>Ainda não há fotos deste pet.</p>
+        <a class="botao" th:href="@{/pets/{id}/fotos/nova(id=${pet.id})}">Enviar a primeira foto</a>
+    </div>
+
+    <div class="linha-tempo" th:unless="${historico.isEmpty()}">
+        <section class="marco" th:each="entrada : ${historico}">
+            <h3>
+                <span th:text="${#temporals.format(entrada.key, 'dd/MM/yyyy')}">data</span>
+                <small th:text="${#lists.size(entrada.value)} + ' foto(s)'"></small>
+            </h3>
+            <div class="galeria">
+                <article class="foto-card" th:each="foto : ${entrada.value}"
+                         th:classappend="${foto.principal} ? 'principal'">
+                    <div class="foto-card-img">
+                        <a th:href="${foto.urlPublica}" target="_blank">
+                            <img th:src="${foto.urlPublica}" alt="foto do pet" loading="lazy">
+                        </a>
+                        <span class="selo" th:if="${foto.principal}">★ Principal</span>
+                    </div>
+                    <div class="acoes">
+                        <form th:unless="${foto.principal}"
+                              th:action="@{/pets/{petId}/fotos/{fotoId}/principal(petId=${pet.id}, fotoId=${foto.id})}"
+                              method="post">
+                            <button type="submit" class="botao-secundario botao-pequeno">★ Principal</button>
+                        </form>
+                        <a class="botao botao-secundario botao-pequeno"
+                           th:href="@{/pets/{petId}/fotos/{fotoId}/download(petId=${pet.id}, fotoId=${foto.id})}">↓ Baixar</a>
+                        <form th:action="@{/pets/{petId}/fotos/{fotoId}/apagar(petId=${pet.id}, fotoId=${foto.id})}"
+                              method="post" onsubmit="return confirm('Apagar esta foto do bucket?');">
+                            <button type="submit" class="botao-perigo botao-pequeno">Apagar</button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
 </main>
 </body>
 </html>

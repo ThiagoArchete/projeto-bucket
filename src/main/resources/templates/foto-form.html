@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Nova foto</title>
-    <link rel="stylesheet" th:href="@{/css/estilo.css}">
-</head>
+<head th:replace="~{fragments :: cabeca('Nova foto')}"></head>
 <body>
 <header th:replace="~{fragments :: topo}"></header>
 <main>
-    <h1>Enviar foto de <span th:text="${pet.nome}"></span></h1>
-    <form th:action="@{/pets/{id}/fotos(id=${pet.id})}" method="post" enctype="multipart/form-data">
-        <label>Imagem
+    <a class="voltar" th:href="@{/pets/{id}(id=${pet.id})}">← Voltar para <span th:text="${pet.nome}"></span></a>
+    <div class="cabecalho">
+        <div>
+            <h1>Nova foto de <span th:text="${pet.nome}"></span></h1>
+            <p>A imagem vai para o bucket; a data e a marcação de principal ficam no banco.</p>
+        </div>
+    </div>
+
+    <form class="formulario" th:action="@{/pets/{id}/fotos(id=${pet.id})}" method="post" enctype="multipart/form-data">
+        <label class="upload" id="upload">
+            <img id="preview" alt="pré-visualização">
+            <span class="emoji">🖼️</span>
+            <strong id="upload-texto">Clique para escolher uma imagem</strong>
+            <small>JPG ou PNG, até 8 MB</small>
             <input type="file" name="arquivo" accept="image/*" required>
         </label>
         <label>Data da foto
@@ -18,10 +25,22 @@
         </label>
         <label class="check">
             <input type="checkbox" name="principal" value="true">
-            Imagem principal (capa do catalogo)
+            ★ Usar como foto principal (capa do catálogo)
         </label>
         <button type="submit">Enviar para o bucket</button>
     </form>
 </main>
+<script>
+    const campo = document.querySelector('#upload input');
+    campo.addEventListener('change', () => {
+        const arquivo = campo.files[0];
+        if (!arquivo) return;
+        document.getElementById('preview').src = URL.createObjectURL(arquivo);
+        document.getElementById('upload-texto').textContent = arquivo.name;
+        document.getElementById('upload').classList.add('com-preview');
+    });
+    const data = document.querySelector('input[name=dataFoto]');
+    if (!data.value) data.valueAsDate = new Date();
+</script>
 </body>
 </html>

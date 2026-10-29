@@ -1,21 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Objetos no bucket</title>
-    <link rel="stylesheet" th:href="@{/css/estilo.css}">
-</head>
+<head th:replace="~{fragments :: cabeca('Bucket')}"></head>
 <body>
 <header th:replace="~{fragments :: topo}"></header>
 <main>
-    <h1>Objetos no bucket</h1>
-    <p th:if="${#lists.isEmpty(objetos)}">Bucket vazio.</p>
-    <ul>
-        <li th:each="obj : ${objetos}">
-            <a th:href="${baseUrl + obj.name}" th:text="${obj.name}" target="_blank"></a>
-            <span th:text="'(' + ${obj.size} + ' bytes)'"></span>
-        </li>
-    </ul>
+    <div class="cabecalho">
+        <div>
+            <h1>Objetos no bucket</h1>
+            <p>Listados direto do Google Cloud Storage: <strong>fatec-2026-grupo-g</strong></p>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(objetos)}" class="vazio">
+        <span class="emoji">🪣</span>
+        <p>Bucket vazio.</p>
+    </div>
+
+    <table class="tabela" th:unless="${#lists.isEmpty(objetos)}">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Objeto</th>
+            <th>Tamanho</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="obj : ${objetos}">
+            <td><img th:src="${baseUrl + obj.name}" alt="" loading="lazy"></td>
+            <td class="nome"><a th:href="${baseUrl + obj.name}" th:text="${obj.name}" target="_blank"></a></td>
+            <td class="num" th:text="${#numbers.formatDecimal(obj.size / 1024.0, 1, 1)} + ' KB'"></td>
+        </tr>
+        </tbody>
+    </table>
 </main>
 </body>
 </html>
